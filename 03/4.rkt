@@ -22,7 +22,8 @@
   (cond
     ((= 0 (modulo y 400)) #t)
     ((= 0 (modulo y 100)) #f)
-    ((= 0 (modulo y 4)) #t)))
+    ((= 0 (modulo y 4)) #t)
+    (else #f)))
 
 (define (check_leap_year_days d y)
   (if (is_leap_year y)
