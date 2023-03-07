@@ -7,7 +7,9 @@
 (define (ma a b)
   (if (> a b) a b))
 (ma 3 4)
+(ma 4 3)
 
 (define (mi a b)
   (if (< a b) a b))
 (mi 3 4)
+(mi 4 3)
