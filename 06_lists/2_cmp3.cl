@@ -11,13 +11,22 @@
 (defun somef (predicates &rest lists)
   "Apply predicates to lists and return result of first predicate which result
   is not nil"
-  (some (lambda (p) (apply #'unsafe-cmp-n p lists))
+  (some (lambda (p) (apply p lists))
         predicates))
+
+(defun curry-f-with-predicates (f predicates)
+  "It makes lambdas of curried versions of f where as first argument passed
+  each of predicates"
+  (mapcar (lambda (p) (lambda (&rest lists) (apply f p lists)))
+          predicates))
 
 (defun cmp3 (l1 l2)
   (cond ((<= (length l1) 2) nil)
         ((<= (length l2) 2) nil)
-        (T (let ((cmp-res (somef '(first second third) l1 l2)))
+        (T (let ((cmp-res (somef
+                            (curry-f-with-predicates
+                              #'unsafe-cmp-n '(first second third))
+                            l1 l2)))
              (if cmp-res
                cmp-res
                "first 3 element are equal")))))
