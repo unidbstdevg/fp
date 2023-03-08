@@ -8,22 +8,19 @@
   (my-cmp (funcall nfunc l1)
           (funcall nfunc l2)))
 
-(defmacro macro-cmp-n (l1 l2 fns endstring)
-  "this applies fns one by one and if for some of them we got string (which
-   means that elements are not equal, and this string says how they related) it
-   returns this string as result"
-  (if (endp fns)
-    endstring
-    (destructuring-bind (fn &rest resta) fns
-      `(let ((res (unsafe-cmp-n ,fn l1 l2)))
-         (if res
-           res
-           (macro-cmp-n l1 l2 ,resta ,endstring))))))
+(defun somef (predicates &rest lists)
+  "Apply predicates to lists and return result of first predicate which result
+  is not nil"
+  (some (lambda (p) (apply #'unsafe-cmp-n p lists))
+        predicates))
 
 (defun cmp3 (l1 l2)
   (cond ((<= (length l1) 2) nil)
         ((<= (length l2) 2) nil)
-        (T (macro-cmp-n l1 l2 (#'first #'second #'third) "first 3 element are equal"))))
+        (T (let ((cmp-res (somef '(first second third) l1 l2)))
+             (if cmp-res
+               cmp-res
+               "first 3 element are equal")))))
 
 (cmp3 '(1 2 3 4) '(1 3 2 4 5))
 ; => "less"
