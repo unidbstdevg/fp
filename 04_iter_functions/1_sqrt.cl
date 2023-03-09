@@ -14,6 +14,7 @@
     (if (good-enough x n)
       x
       (myiter (f x n))))
-  (myiter 1))
+  (when (>= n 0)
+    (myiter 1)))
 
 (mysqrt 169)
