@@ -7,8 +7,8 @@
       lists diffs)))
 
 
-(defun padd (p1 p2)
-  (apply #'mapcar #'+ (align-lists 0 p1 p2)))
+(defun padd (&rest ps)
+  (apply #'mapcar #'+ (apply #'align-lists 0 ps)))
 
 (defun pmulc (p c)
   (mapcar (lambda (x) (* x c)) p))
@@ -26,6 +26,10 @@
     (loop for power from 0 and k in p
           collect (* k (expt x power)))))
 
+(defun pmulp (p1 p2)
+  (apply #'padd (loop for power from 0 and k in p1
+                   collect (pmulm p2 power k))))
+
 (padd '(1 1) '(0 1 1))
 ; => (1 2 1)
 (padd '(1 2) '(3 4 5))
@@ -38,3 +42,9 @@
 
 (calcp '(1 2) 0.7)
 ; => 2.4
+
+(pmulp '(1 2) '(0 3 4))
+; => (0 3 10 8)
+; (1 + 2x) * (0 + 3x + 4x^2)
+; (0 + 3x + 4x^2) + (0 + 6x^2 + 8x^3)
+; 0 + 3x + 10x^2 + 8x^3
